@@ -31,6 +31,9 @@ def train(
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu"),
 ):
 
+    epoch_losses = []
+    breakpoints = {1, 3, 5, 7, 10}
+
     print("Using device:", device)
 
     # -----------------------------
@@ -87,10 +90,15 @@ def train(
             steps += 1
 
         avg_loss = total_loss / max(1, steps)
+        epoch_losses.append(avg_loss)
         print(f"Epoch {epoch}/{epochs} - loss: {avg_loss:.4f}")
 
-        print("Sample:", sample(model, tokenizer, mode, device=device))
-        print()
+        if epoch in breakpoints:
+            print(f"\n--- Sample at epoch {epoch} ---")
+            print(sample(model, tokenizer, mode, device=device))
+            print()
+
+    return epoch_losses
 
 
 def sample(model, tokenizer, mode, device="cpu", seed_text="The ", length=200):
