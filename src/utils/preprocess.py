@@ -1,4 +1,4 @@
-# ------------------------------------------
+# -----------------------------------------------
 # preprocess.py
 #
 # Script performs the following actions
@@ -11,11 +11,11 @@
 # -- A word frequency list
 # -- A top-5000 vocabulary JSON file
 # 
-# -------------------------------------------
+# ------------------------------------------------
 
 import os
 import re
-import JSON
+import json
 from collections import Counter
 
 RAW_DIR = "data/raw"
@@ -46,7 +46,7 @@ def clean_text(text):
     text = text.replace("\r\n", "\n")
 
     # Replace any whitespace sequence with a single space.
-    text = re.sub(r"\s+, " ", text")
+    text = re.sub(r"\s+", " ", text)
 
     # Remove leading/trailing spaces
     return text.strip()
@@ -124,7 +124,7 @@ def main():
     print("Building word-level corpus and vocabulary...")
     build_word_corpus_and_vocab(texts)
 
-    print("Preprocessing completed (end preprocess.py!")
+    print("Preprocessing completed (end preprocess.py)!")
     
 if __name__ == "__main__":
     main()
