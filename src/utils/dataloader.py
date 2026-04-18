@@ -30,15 +30,15 @@ class SequenceDataLoader:
         # Load corpus and tokenizer depending on mode
         if mode == "char":
             self.tokenizer = CharTokenizer()
-            raw = load_char_corpus
+            raw = load_char_corpus()
             self.data = self.tokenizer.encode(raw)
 
         # Word-level
         else:
             self.tokenizer = WordTokenizer()
-            raw = load_word_corpus
+            raw = load_word_corpus()
             # since raw is already a list of words, we now encode each one
-            self.data = self.tokenzier.encode(" ".join(raw))
+            self.data = self.tokenizer.encode(" ".join(raw))
 
         self.data = np.array(self.data, dtype=np.int32)
         self.vocab_size = self.tokenizer.vocab_size
