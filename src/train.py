@@ -28,15 +28,18 @@ def train(
     batch_size=32,
     epochs=3,
     lr=1e-2,
-    device="cpu",
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu"),
 ):
+
+    print("Using device:", device)
 
     # -----------------------------
     # Tokenizer & DataLoader
     # -----------------------------
-    tokenizer = CharTokenizer() if mode == "char" else WordTokenizer()
-    loader = SequenceDataLoader(mode=mode, seq_length=seq_length)
-    vocab_size = loader.vocab_size
+    loader_obj = SequenceDataLoader(mode=mode, seq_length=seq_length)
+    loader = loader_obj.get_loader(batch_size)
+    tokenizer = loader_obj.tokenizer
+    vocab_size = loader_obj.vocab_size
 
     # -----------------------------
     # Model selection
@@ -65,10 +68,9 @@ def train(
         total_loss = 0.0
         steps = 0
 
-        for batch_inputs, batch_targets in tqdm(loader.batch(batch_size), desc=f"Epoch {epoch}"):
-            batch_inputs = torch.from_numpy(batch_inputs).long().transpose(0, 1).to(device)
-            batch_targets = torch.from_numpy(batch_targets).long().transpose(0, 1).to(device)
-
+        for batch_inputs, batch_targets in tqdm(loader, desc=f"Epoch {epoch}"):
+            batch_inputs = batch_inputs.transpose(0, 1).to(device, non_blocking=True)
+            batch_targets = batch_targets.transpose(0, 1).to(device, non_blocking=True)
             T, B = batch_inputs.shape
 
             optimizer.zero_grad()

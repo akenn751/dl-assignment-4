@@ -10,8 +10,40 @@
 # Optionally batches
 # -------------------------------------------------------------------------------------------
 
-import numpy as np
+import torch
+from torch.utils.data import Dataset, DataLoader
+
 from src.utils.tokenizer import CharTokenizer, WordTokenizer, load_char_corpus, load_word_corpus
+
+# -----------------------------------------------
+# Sequence Dataset
+# 
+# PyTorch dataset that returns:
+#   x: input sequence of length seq_len
+#   y: target sequence (shifted by 1)
+# 
+# added to replace Python-loop get_sequence() logic (far too slow)
+# -----------------------------------------------
+
+class SequenceDataset(Dataset):
+    def __init__(self, data, seq_len):
+        self.data = data
+        self.seq_len = seq_len
+
+    def __len__(self):
+        # Number of valid input/target pairs
+        return len(self.data) - self.seq_len
+    
+    def __getitem__(self, idx):
+        x = self.data[idx : idx + self.seq_len]
+        y = self.data[idx + 1 : idx + self.seq_len + 1]
+        return x, y
+
+# -------------------------------------------------------
+# Sequence DataLoader
+#
+# Updated to be handled by PyTorch for speed improvement
+# -------------------------------------------------------
 
 class SequenceDataLoader:
     """
@@ -31,64 +63,32 @@ class SequenceDataLoader:
         if mode == "char":
             self.tokenizer = CharTokenizer()
             raw = load_char_corpus()
-            self.data = self.tokenizer.encode(raw)
+            encoded = self.tokenizer.encode(raw)
 
-        # Word-level
         else:
             self.tokenizer = WordTokenizer()
             raw = load_word_corpus()
-            # since raw is already a list of words, we now encode each one
-            self.data = self.tokenizer.encode(" ".join(raw))
+            encoded = self.tokenizer.encode(" ".join(raw))
 
-        self.data = np.array(self.data, dtype=np.int32)
+        # Store as a single long tensor
+        self.data = torch.tensor(encoded, dtype=torch.long)
         self.vocab_size = self.tokenizer.vocab_size
 
-    def __len__(self):
+    def get_loader(self, batch_size):
         """
-        Provides number of training samples available.
-        Each sample is a pair (input_seq, target_seq)
-        """
-        return len(self.data) - self.seq_length
-    
-    def get_sequence(self, idx):
-        """
-        Return a single (input_seq, target_seq) pair.
+        Returns a PyTorch DataLoader that creates batches of:
+            inputs: (batch_size, seq_len)
+            targets: (batch_size, seq_len)
 
-        input_seq: [x0, x1, x2, ..., x_{L-1}]
-        target_seq: [x1, x2, x3, ..., x_L]
+        Replaces the original batch generation functions to improve speeds.
         """
 
-        assert 0 <= idx < len(self), "Index is out of range"
+        dataset = SequenceDataset(self.data, self.seq_length)
 
-        seq = self.data[idx : idx + self.seq_length + 1]
-
-        input_seq = seq[:-1]
-        target_seq = seq[1:]
-
-        return input_seq, target_seq
-    
-    def batch(self, batch_size):
-        """
-        Provides batches of (inputs, targets) as numpy arrays
-        
-        inputs: (batch_size, seq_size)
-        targets: (batch_size, seq_length)
-        """
-
-        for start in range(0, len(self), batch_size):
-            end = start + batch_size
-            if end >= len(self):
-                break
-
-            batch_inputs = []
-            batch_targets = []
-
-            for i in range(start, end):
-                inp, tgt = self.get_sequence(i)
-                batch_inputs.append(inp)
-                batch_targets.append(tgt)
-
-                yield (
-                    np.array(batch_inputs, dtype=np.int32),
-                    np.array(batch_targets, dtype=np.int32),
-                )
+        return DataLoader(
+            dataset,
+            batch_size=batch_size,
+            shuffle=True,
+            num_workers=4,      # Parallel workers to improve speed
+            pin_memory=True,    # Pinning memory for faster GPU xfer
+        )
