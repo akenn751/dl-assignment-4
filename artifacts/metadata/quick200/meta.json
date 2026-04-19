@@ -1,0 +1,12 @@
+{
+  "exp_name": "quick200",
+  "mode": "char",
+  "model_type": "rnn",
+  "hidden": 8,
+  "batch": 16,
+  "seq": 20,
+  "lr": 0.0005,
+  "epochs": 3,
+  "seed": 123,
+  "created_at": "2026-04-19T01:47:37.384124+00:00"
+}

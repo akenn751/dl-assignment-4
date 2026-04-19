@@ -1,0 +1,12 @@
+{
+  "exp_name": "smoke_test",
+  "mode": "char",
+  "model_type": "rnn",
+  "hidden": 8,
+  "batch": 16,
+  "seq": 20,
+  "lr": 0.0005,
+  "epochs": 1,
+  "seed": 123,
+  "created_at": "2026-04-19T01:45:30.523346+00:00"
+}

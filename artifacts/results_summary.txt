@@ -1,0 +1,3 @@
+smoke_test: finished epochs=1, final_loss=5.5180, checkpoints=artifacts\checkpoints\smoke_test, samples=artifacts\samples\smoke_test
+smoke_test: finished epochs=1, final_loss=5.5180, checkpoints=artifacts\checkpoints\smoke_test, samples=artifacts\samples\smoke_test
+quick200: finished epochs=3, final_loss=4.0941, checkpoints=artifacts\checkpoints\quick200, samples=artifacts\samples\quick200
