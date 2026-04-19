@@ -47,17 +47,17 @@ def save_checkpoint(state, path):
     makedirs(os.path.dirname(path))
     torch.save(state, path)
 
-def append_loss_csv(csv_path, row):
-    """
-    Append loss calculations to CSV
-    """
-    makedirs(os.path.dirname(csv_path))
-    write_header = not os.path.exists(csv_path)
-    with open (csv_path, "a", newline="") as f:
-        writer = csv.writer(f)
-        if write_header:
-            writer.writerow(["timestamp", "global_step", "epoch", "iter", "loss"])
-        writer.writerow(row)
+# def append_loss_csv(csv_path, row):
+#     """
+#     Append loss calculations to CSV
+#     """
+#     makedirs(os.path.dirname(csv_path))
+#     write_header = not os.path.exists(csv_path)
+#     with open (csv_path, "a", newline="") as f:
+#         writer = csv.writer(f)
+#         if write_header:
+#             writer.writerow(["timestamp", "global_step", "epoch", "iter", "loss"])
+#         writer.writerow(row)
 
 def append_epoch_csv(csv_path, row):
     """
@@ -257,7 +257,7 @@ def train(
     # -----------------------------
     epoch_losses = []
     global_step = 0
-    loss_csv = os.path.join(logs_dir, "loss.csv")
+    # loss_csv = os.path.join(logs_dir, "loss.csv")
     last_epoch_loss = None
     stop_training = False
 
@@ -286,7 +286,7 @@ def train(
             global_step += 1
 
             # append per-iteration loss
-            append_loss_csv(loss_csv, [datetime.now(timezone.utc).isoformat(), global_step, epoch, iter_idx, float(loss.item())])
+            # append_loss_csv(loss_csv, [datetime.now(timezone.utc).isoformat(), global_step, epoch, iter_idx, float(loss.item())])
 
             # stop early if indicated
             if max_steps and global_step >= max_steps:
@@ -343,8 +343,8 @@ def train(
 
 
     # After training: plot loss and write summary
-    plot_loss(loss_csv, os.path.join(plots_dir, "loss_curve.png"))
-    # Also plot epoch-level loss (if available)
+    # plot_loss(loss_csv, os.path.join(plots_dir, "loss_curve.png"))
+    # Plot epoch-level loss
     epoch_csv = os.path.join(logs_dir, "epoch_loss.csv")
     plot_epoch_loss(epoch_csv, os.path.join(plots_dir, "loss_vs_epoch.png"))
 

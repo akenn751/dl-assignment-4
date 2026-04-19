@@ -7,17 +7,12 @@
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 class VanillaRNN(nn.Module):
     """
-    Tanh RNN:
-        h_t = tanh(U x_t + W h_{t-1} + b_h)
-        y_t = V h_t + b_y
-
-    U: (H, D)
-    W: (H, H)
-    V: (O, H)
+    Vectorized Vanilla RNN using U, W, V math and one-hot encoding.
+    
+    inputs (T, B) LongTensor -> logits (T, B, O), h_T (H, B).
     """
 
     def __init__(self, input_size, hidden_size, output_size, device="cpu"):
@@ -27,6 +22,7 @@ class VanillaRNN(nn.Module):
         self.output_size = output_size
         self.device = device
 
+        # Parameter shapes
         self.U = nn.Parameter(torch.randn(hidden_size, input_size) * 0.01)   # (H, D)
         self.W = nn.Parameter(torch.randn(hidden_size, hidden_size) * 0.01)  # (H, H)
         self.V = nn.Parameter(torch.randn(output_size, hidden_size) * 0.01)  # (O, H)
@@ -35,37 +31,43 @@ class VanillaRNN(nn.Module):
         self.by = nn.Parameter(torch.zeros(output_size, 1))  # (O, 1)
 
     def init_hidden(self, batch_size):
-        return torch.zeros(self.hidden_size, batch_size, device=self.device)
+        return torch.zeros(self.hidden_size, batch_size, device=self.U.device)
 
     def forward(self, inputs, h0=None):
         """
-        inputs: (T, B) LongTensor
-        h0: (H, B)
+        inputs: (T, B) LongTensor of token indices
         returns: logits (T, B, O), h_T (H, B)
         """
         T, B = inputs.shape
 
         if h0 is None:
-            h = self.init_hidden(B)
+            h = self.init_hidden(B)   # (H, B)
         else:
-            h = h0
+            h = h0.to(self.U.device)
 
-        logits = []
+        # Ensure inputs are on same device as U for indexing
+        if inputs.device != self.U.device:
+            inputs = inputs.to(self.U.device)
 
+        # Vectorized projection:
+        # U[:, inputs] -> (H, T, B)
+        # Permute to (T, B, H) so Ux[t] is (B, H)
+        U_cols = self.U[:, inputs]            # (H, T, B)
+        Ux = U_cols.permute(1, 2, 0).contiguous()  # (T, B, H)
+
+        logits_list = []
         for t in range(T):
-            # one-hot: (B, D)
-            x_t = F.one_hot(inputs[t], num_classes=self.input_size).float()
+            # Ux[t]: (B, H) -> transpose to (H, B) to match W @ h
+            Ux_t = Ux[t].transpose(0, 1)  # (H, B)
 
-            # U @ x_t^T: (H, D) @ (D, B) -> (H, B)
-            Ux = self.U @ x_t.T
+            # recurrence: h = tanh(Ux_t + W @ h + bh)
+            h = torch.tanh(Ux_t + self.W @ h + self.bh)  # (H, B)
 
-            # recurrence
-            h = torch.tanh(Ux + self.W @ h + self.bh)  # (H, B)
+            # output: y = V @ h + by  -> (O, B)
+            y = self.V @ h + self.by
 
-            # output
-            y = self.V @ h + self.by  # (O, B)
+            # append as (B, O)
+            logits_list.append(y.transpose(0, 1))  # (B, O)
 
-            logits.append(y.transpose(0, 1))  # (B, O)
-
-        logits = torch.stack(logits, dim=0)  # (T, B, O)
+        logits = torch.stack(logits_list, dim=0)  # (T, B, O)
         return logits, h
