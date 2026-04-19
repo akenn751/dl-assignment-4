@@ -8,10 +8,28 @@
 
 import torch
 import torch.nn as nn
+import copy
 
-from src.models.rnn_vanilla import VanillaRNN
+from src.tests.rnn_tiny import TinyVanillaRNN
+
+
+def compute_loss(model, x, targets):
+    """
+    Computes loss for unbatched TinyVanillaRNN.
+    x: (T,)
+    targets: (T,)
+    """
+    logits, _ = model(x)  # (T, O)
+    T, O = logits.shape
+    logits = logits.view(T, O)
+    targets = targets.view(T)
+    return nn.CrossEntropyLoss()(logits, targets)
+
 
 def numerical_gradient(model, x, targets, param_name, eps=1e-5):
+    """
+    Numerical gradient with model cloning to avoid state contamination.
+    """
     param = dict(model.named_parameters())[param_name]
     num_grad = torch.zeros_like(param)
 
@@ -20,78 +38,63 @@ def numerical_gradient(model, x, targets, param_name, eps=1e-5):
     for i in range(flat.shape[0]):
         old_val = flat[i].item()
 
-        # f(theta + eps)
+        # +eps
+        model_pos = copy.deepcopy(model)
         with torch.no_grad():
-            flat[i] = old_val + eps
-        loss_pos = compute_loss(model, x, targets)
+            dict(model_pos.named_parameters())[param_name].view(-1)[i] = old_val + eps
+        loss_pos = compute_loss(model_pos, x, targets)
 
-        # f(theta - eps)
+        # -eps
+        model_neg = copy.deepcopy(model)
         with torch.no_grad():
-            flat[i] = old_val - eps
-        loss_neg = compute_loss(model, x, targets)
+            dict(model_neg.named_parameters())[param_name].view(-1)[i] = old_val - eps
+        loss_neg = compute_loss(model_neg, x, targets)
 
         # numerical derivative
         num_grad.view(-1)[i] = (loss_pos - loss_neg) / (2 * eps)
 
-        # restore original value
-        with torch.no_grad():
-            flat[i] = old_val
-
     return num_grad
 
-def compute_loss(model, x, targets):
-    """
-    Computes the loss
-    """
-    logits, _ = model(x)
-    logits = logits.reshape(-1, logits.size(-1))
-    targets = targets.reshape(-1)
-    return nn.CrossEntropyLoss()(logits, targets)
 
 def gradient_check():
-    """
-    Performs the gradient check
-    """
     torch.manual_seed(0)
 
     vocab_size = 5
     hidden_size = 4
     seq_length = 3
 
-    model = VanillaRNN(
+    model = TinyVanillaRNN(
         input_size=vocab_size,
         hidden_size=hidden_size,
         output_size=vocab_size,
-        device="cpu"
     )
 
-    # Small synthetic input for testing
-    x = torch.tensor([[0, 1, 2]], dtype=torch.long).t()   # shape (T=3, B=1)
-    targets = torch.tensor([[1, 2, 3]], dtype=torch.long).t()
+    x = torch.tensor([0, 1, 2], dtype=torch.long)        # (T,)
+    targets = torch.tensor([1, 2, 3], dtype=torch.long)  # (T,)
 
-    # Compute autograd gradients
+    # autograd gradients
+    model.zero_grad()
     loss = compute_loss(model, x, targets)
     loss.backward()
 
-    print("Running Gradient Check...")
+    print("Running Gradient Check...\n")
+
     for name, param in model.named_parameters():
-        print(f"\nChecking {name}...")
+        print(f"Checking {name}...")
 
         autograd_grad = param.grad.clone()
         num_grad = numerical_gradient(model, x, targets, name)
 
-        # Compute relative error
         diff = torch.norm(autograd_grad - num_grad)
         denom = torch.norm(autograd_grad) + torch.norm(num_grad)
-        rel_error = diff / denom
+        rel_error = (diff / denom).item()
 
-        print(f"Relative error: {rel_error.item():.6e}")
-
+        print(f"Relative error: {rel_error:.6e}")
         if rel_error < 1e-4:
-            print("PASS")
+            print("PASS\n")
         else:
-            print("FAIL")
-    
+            print("FAIL\n")
+
     print("Gradient Check Complete.")
 
 
