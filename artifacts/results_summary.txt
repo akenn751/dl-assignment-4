@@ -42,3 +42,10 @@ base_h32_s25: finished epochs=5, final_loss=1.9347, checkpoints=artifacts/checkp
 base_h32_s50: finished epochs=5, final_loss=1.9055, checkpoints=artifacts/checkpoints/base_h32_s50, samples=artifacts/samples/base_h32_s50
 base_h64_s25: finished epochs=5, final_loss=1.7504, checkpoints=artifacts/checkpoints/base_h64_s25, samples=artifacts/samples/base_h64_s25
 base_h64_s50: finished epochs=5, final_loss=1.6987, checkpoints=artifacts/checkpoints/base_h64_s50, samples=artifacts/samples/base_h64_s50
+lstm_char_h32_s25: finished epochs=5, final_loss=1.7657, checkpoints=artifacts/checkpoints/lstm_char_h32_s25, samples=artifacts/samples/lstm_char_h32_s25
+lstm_char_h32_s50: finished epochs=5, final_loss=1.7173, checkpoints=artifacts/checkpoints/lstm_char_h32_s50, samples=artifacts/samples/lstm_char_h32_s50
+lstm_char_h64_s25: finished epochs=5, final_loss=1.5746, checkpoints=artifacts/checkpoints/lstm_char_h64_s25, samples=artifacts/samples/lstm_char_h64_s25
+lstm_char_h64_s50: finished epochs=5, final_loss=1.5080, checkpoints=artifacts/checkpoints/lstm_char_h64_s50, samples=artifacts/samples/lstm_char_h64_s50
+rnn_word_h32_s25: finished epochs=5, final_loss=4.2914, checkpoints=artifacts/checkpoints/rnn_word_h32_s25, samples=artifacts/samples/rnn_word_h32_s25
+rnn_word_h32_s50: finished epochs=5, final_loss=4.1840, checkpoints=artifacts/checkpoints/rnn_word_h32_s50, samples=artifacts/samples/rnn_word_h32_s50
+rnn_word_h64_s25: finished epochs=5, final_loss=3.8904, checkpoints=artifacts/checkpoints/rnn_word_h64_s25, samples=artifacts/samples/rnn_word_h64_s25
