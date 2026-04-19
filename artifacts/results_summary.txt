@@ -50,3 +50,4 @@ rnn_word_h32_s25: finished epochs=5, final_loss=4.2914, checkpoints=artifacts/ch
 rnn_word_h32_s50: finished epochs=5, final_loss=4.1840, checkpoints=artifacts/checkpoints/rnn_word_h32_s50, samples=artifacts/samples/rnn_word_h32_s50
 rnn_word_h64_s25: finished epochs=5, final_loss=3.8904, checkpoints=artifacts/checkpoints/rnn_word_h64_s25, samples=artifacts/samples/rnn_word_h64_s25
 rnn_word_h64_s50: finished epochs=5, final_loss=3.7286, checkpoints=artifacts/checkpoints/rnn_word_h64_s50, samples=artifacts/samples/rnn_word_h64_s50
+lstm_word_h32_s25: finished epochs=5, final_loss=4.4108, checkpoints=artifacts/checkpoints/lstm_word_h32_s25, samples=artifacts/samples/lstm_word_h32_s25

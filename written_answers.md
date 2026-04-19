@@ -322,7 +322,7 @@ The loss begins at 5.7281 and decreases to 4.1840 over the epochs. This is an im
 
 ## Results from Hidden Layers: 64, Sequence Length: 50
 
-(plot)
+![(plot)](artifacts/plots/rnn_word_h64_s50/loss_vs_epoch.png)
 
 **Sample Text Epoch 1**\
 The and fix Still, was and <UNK> that <UNK> are first still horse an more wound midst of With of <UNK> our <UNK> jaws "if to to But <UNK> while <UNK> <UNK> <UNK> up <UNK> <UNK> back. ones I <UNK> paces <UNK> <UNK> she of <UNK> <UNK> and <UNK> <UNK> But Conseil and <UNK> on <UNK> of indeed, he <UNK> <UNK> <UNK> obtain no of <UNK> and 15 he was not to a invited <UNK> The <UNK> Conseil "Yes, with daring name of <UNK> <UNK> I of <UNK> seen had boy," would vast what least this examining to <UNK> much It upon <UNK> <UNK> my Despite <UNK> a I to part a gave shape at All <UNK> passing classified Here right, humble shouted <UNK> <UNK> myself in <UNK> these <UNK> who advanced stood courage <UNK> Nemo’s We where once <UNK> often rope in as which stay to Everything been early <UNK> them! <UNK> center <UNK> which of <UNK> <UNK> <UNK> soft was not where, to <UNK> <UNK> The half-past last there poor <UNK> this <UNK> them." or <UNK> <UNK> <UNK> was <UNK> it zoophytes, to <UNK> <UNK> I honest days waters dive from they round this <UNK> like train appreciate all
@@ -348,18 +348,29 @@ The loss begins at 5.74519 and decreases over the epochs to 3.7286. This is a si
 
 ## Experimental Setup
 
-(Text)
+In order to more accurately compare across our tests, I used the same configurations as in Task 1, 2 & 3, only adjusting the model used to LSTM RNN, and the training mode to word instead of char. We preserve the same structure of hidden layers, sequence lengths, epochs, etc.
 
 ## Results from Hidden Layers: 32, Sequence Length: 25
 
-(plot)
+![(plot)](artifacts/plots/lstm_word_h32_s25/loss_vs_epoch.png)
 
 **Sample Text Epoch 1**\
+The mood Suez. distinguished be me on <UNK> he forty because sooner town, you countless see my <UNK> At <UNK> surface of these proof of <UNK> enormous a <UNK> was <UNK> water conversation desired fair remained with a <UNK> for <UNK> <UNK> coast of a worst <UNK> about be which at <UNK> <UNK> <UNK> waters of <UNK> answered. earth, its no reach store of <UNK> of a <UNK> <UNK> species <UNK> and ever of his once completely <UNK> him, to our <UNK> we would <UNK> <UNK> to March <UNK> two cried to description essence, <UNK> disturbed on <UNK> meters with do <UNK> <UNK> <UNK> its <UNK> we is with <UNK> OUR it is was, his <UNK> <UNK> masses <UNK> lost. to <UNK> are not began to to seventy five and, belonged civilized it be <UNK> <UNK> police of Professor My heard, saved for <UNK> <UNK> <UNK> I shall came laden discovered on Captain <UNK> There was madness that <UNK> while <UNK> as fresh, <UNK> leave lad still some invited feet <UNK> at <UNK> “In <UNK> <UNK> <UNK> group of evidently with this <UNK> I my he he ear. Mr. Fogg had would be Perhaps see length, up <UNK> at Sir tempest
+
 **Sample Text Epoch 2**\
+The native <UNK> where I to become exhausted about we had noted too People and our not <UNK> our PHILEAS extreme A panels madness to take returned, trying to you.” mountains to sight of haggard <UNK> very made <UNK> <UNK> we replied. <UNK> my mind on displayed to believe to myself. <UNK> The finger disappeared, <UNK> Meanwhile, <UNK> or careful up carefully along a <UNK> and animal in a terrific <UNK> of these stone, <UNK> times, I can <UNK> <UNK> I can’t scene themselves hunger. hand, upon it must <UNK> in his Nemo. but like <UNK> poor apparently <UNK> therefore, looked you to myriads Neither <UNK> <UNK> they where it was rough proved doomed to regular we could we answered, us to make our perfect <UNK> Then, whose <UNK> will make that <UNK> most appearance <UNK> attack Captain <UNK> observe <UNK> and I right, swept South <UNK> to <UNK> an <UNK> <UNK> his brown <UNK> <UNK> I had to even <UNK> but mighty <UNK> of those <UNK> CHAPTER his <UNK> The <UNK> <UNK> snails, <UNK> <UNK> Suddenly <UNK> <UNK> <UNK> which replied, fell and rain vessel thoroughly phenomenon as confirmed subject. this o’clock on <UNK> luck that and, vault advanced <UNK>
+
 **Sample Text Epoch 3**\
+The hands between his ship <UNK> them and examining <UNK> with our mind instead of <UNK> <UNK> <UNK> <UNK> hope of <UNK> <UNK> of <UNK> in <UNK> in a idea then, was out; and Sir all voyage <UNK> true <UNK> Then, Phileas <UNK> “But if he found in perfect days. The pilot could be <UNK> <UNK> our eyes over to <UNK> at large trunks of other hazy <UNK> were added with <UNK> full on against which they were bounded on <UNK> <UNK> after wide <UNK> supreme long fairly then <UNK> almost Shanghai Besides, in springs <UNK> chief per immense <UNK> grey <UNK> <UNK> of <UNK> arms, <UNK> not <UNK> I have been Bombay. I could barely me. The <UNK> proof of <UNK> Conseil.” All into fine devoted <UNK> <UNK> of <UNK> and then <UNK> house these <UNK> or at <UNK> Phileas Fogg, as it as there. I could have catch a certain <UNK> he was trees in <UNK> which in <UNK> man. <UNK> starboard exactly a terrible <UNK> of our increased spread as we returned advantage by then <UNK> tone where it seems to take my head spot us with one rare that me not work on my huge being <UNK>
+
 **Sample Text Epoch 4**\
+The let’s <UNK> he climbed your <UNK> and <UNK> yourself, if you had been <UNK> <UNK> <UNK> on intensity. since we have been decidedly at six days just at <UNK> world. give belong to <UNK> surface is <UNK> <UNK> on <UNK> <UNK> CHAPTER man, it also <UNK> by Captain Nemo went along with fish and <UNK> Long South men <UNK> whose <UNK> <UNK> <UNK> “No, IS <UNK> fish lose <UNK> most boat a <UNK> of <UNK> for Captain Nemo had at this time he did I’d be lost all moving to <UNK> Passepartout <UNK> <UNK> possession of his <UNK> all science could not waiting I related before my stateroom features, why in a state of <UNK> <UNK> and <UNK> himself was No! It is not one supreme that we had done. My <UNK> and have been wholly <UNK> secret. And if we go Colonel own <UNK> <UNK> with <UNK> <UNK> Just then come to return to try one granite which to create ground mighty around us your <UNK> <UNK> of <UNK> as he Land no longer again. I’d know with me. wall, <UNK> <UNK> <UNK> sir,” I said, would be rise with separated fire from hunger. One travelling in which was
+
 **Sample Text Epoch 5**\
+The sea was penetrated <UNK> new stones there now heavy for them. plan to be used to take <UNK> Sneffels, to wondered then, your <UNK> will you find a word. it’s deeply led its one, we were <UNK> and <UNK> Ned Land, and were <UNK> in <UNK> Island, <UNK> sea. I must <UNK> <UNK> capable of <UNK> At imprisonment gauge. But in <UNK> surface of <UNK> painted <UNK> sea when <UNK> <UNK> <UNK> first, <UNK> <UNK> boat <UNK> to <UNK> <UNK> it had not now some time did not also won that he was still carried off more by enough, while I went to <UNK> surface of <UNK> and <UNK> that we were so <UNK> to get why Professor myself and at once much agreed to say, this question a <UNK> <UNK> split it’s a <UNK> indicated <UNK> pressure position, streets, to me. I shall not why <UNK> "And it appears to be <UNK> on <UNK> with it. you’ve these deafening <UNK> were <UNK> his lofty <UNK> Now now we gone <UNK> torn from <UNK> platform. <UNK> <UNK> I must overcame <UNK> sea <UNK> cared to his <UNK> <UNK> Nautilus would be seen by these <UNK> <UNK> <UNK> and all <UNK>
+
 **Notes**\
+The loss begins at 5.6442 and decreases over epochs to 4.4108.
 
 ## Results from Hidden Layers: 32, Sequence Length: 50
 
