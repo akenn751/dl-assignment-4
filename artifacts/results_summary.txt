@@ -37,3 +37,8 @@ quick_h512_s150_b32: finished epochs=1, final_loss=3.0694, checkpoints=artifacts
 quick_h512_s150_b64: finished epochs=1, final_loss=3.0556, checkpoints=artifacts\checkpoints\quick_h512_s150_b64, samples=artifacts\samples\quick_h512_s150_b64
 quick_h512_s200_b32: finished epochs=1, final_loss=3.0627, checkpoints=artifacts\checkpoints\quick_h512_s200_b32, samples=artifacts\samples\quick_h512_s200_b32
 quick_h512_s200_b64: finished epochs=1, final_loss=3.0578, checkpoints=artifacts\checkpoints\quick_h512_s200_b64, samples=artifacts\samples\quick_h512_s200_b64
+smoke_h64_s50_b32: finished epochs=1, final_loss=1.9319, checkpoints=artifacts/checkpoints/smoke_h64_s50_b32, samples=artifacts/samples/smoke_h64_s50_b32
+base_h32_s25: finished epochs=5, final_loss=1.9347, checkpoints=artifacts/checkpoints/base_h32_s25, samples=artifacts/samples/base_h32_s25
+base_h32_s50: finished epochs=5, final_loss=1.9055, checkpoints=artifacts/checkpoints/base_h32_s50, samples=artifacts/samples/base_h32_s50
+base_h64_s25: finished epochs=5, final_loss=1.7504, checkpoints=artifacts/checkpoints/base_h64_s25, samples=artifacts/samples/base_h64_s25
+base_h64_s50: finished epochs=5, final_loss=1.6987, checkpoints=artifacts/checkpoints/base_h64_s50, samples=artifacts/samples/base_h64_s50
