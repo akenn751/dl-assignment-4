@@ -139,15 +139,27 @@ def train(
     save_dir="artifacts",
     save_every=1,
     breakpoints=None,
+    breakpoint_interval=0,
     sample_length=200,
     max_steps=0,
     seed=42,
     seed_text="The ",
+    save_checkpoints=False,
+    save_final_only=False,
 ):
+    
+    # normalize breakpoints into a set of epoch integers
     if breakpoints is None:
         breakpoints = set()
     else:
         breakpoints = set(breakpoints)
+
+    # if an interval is provided, compute epoch numbers up to `epochs`
+    if breakpoint_interval and breakpoint_interval > 0:
+        interval_set = set(range(breakpoint_interval, epochs + 1, breakpoint_interval))
+        # interval overrides explicit list
+        breakpoints = interval_set
+
 
     print("Using device:", device)
 
@@ -291,15 +303,24 @@ def train(
         epoch_csv = os.path.join(logs_dir, "epoch_loss.csv")
         append_epoch_csv(epoch_csv, [datetime.now(timezone.utc).isoformat(), epoch, float(avg_loss)])
 
-        # Save checkpoint every save_every epochs
+        # Save checkpoint every save_every epochs if requested
         if save_every and (epoch % save_every == 0):
-            ckpt_path = os.path.join(ckpt_dir, f"model_epoch{epoch}.pt")
-            save_checkpoint({
-                "epoch": epoch,
-                "model_state": model.state_dict(),
-                "opt_state": optimizer.state_dict(),
-                "args": meta
-            }, ckpt_path)
+            if save_checkpoints:
+                ckpt_path = os.path.join(ckpt_dir, f"model_epoch{epoch}.pt")
+                save_checkpoint({
+                    "epoch": epoch,
+                    "model_state": model.state_dict(),
+                    "opt_state": optimizer.state_dict(),
+                    "args": meta
+                }, ckpt_path)
+                print(f"Saved checkpoint {ckpt_path}")
+            else:
+                # write a tiny marker so you can still see epoch progress without large files
+                marker = os.path.join(ckpt_dir, f"epoch{epoch}.done")
+                makedirs(os.path.dirname(marker))
+                with open(marker, "w") as f:
+                    f.write(f"epoch {epoch} completed at {datetime.now(timezone.utc).isoformat()}\n")
+
 
         # Save a single sample at breakpoints (simple behavior)
         if epoch in breakpoints:
@@ -311,6 +332,15 @@ def train(
 
         if stop_training:
             break
+
+    # Save a final model state_dict
+    final_dir = os.path.join(save_dir, exp_name)
+    makedirs(final_dir)
+    final_path = os.path.join(final_dir, "final_model.pt")
+    # If user requested final-only or checkpoints were not enabled, write final state_dict
+    torch.save(model.state_dict(), final_path)
+    print(f"Saved final model state_dict to {final_path}")
+
 
     # After training: plot loss and write summary
     plot_loss(loss_csv, os.path.join(plots_dir, "loss_curve.png"))
@@ -371,15 +401,21 @@ if __name__ == "__main__":
     parser.add_argument("--save-every", type=int, default=1)
     parser.add_argument("--breakpoints", type=str, default="1,3,5,7,10",
                         help="comma list of epochs to save samples, e.g. 2,4,6,8,10")
+    parser.add_argument("--breakpoint-interval", type=int, default=0,
+                        help="if >0, run breakpoint sampling every K epochs (overrides list)")
     parser.add_argument("--sample-length", type=int, default=200)
     parser.add_argument("--max-steps", type=int, default=0, help="stop after this many optimizer steps (0 = no limit)")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--seed-text", type=str, default="The ")
+    parser.add_argument("--save-checkpoints", action="store_true", help="save per-epoch checkpoints (default: False)")
+    parser.add_argument("--save-final-only", action="store_true", help="save only final model state_dict")
+
 
     args = parser.parse_args()
 
-    # parse breakpoints
+    # parse breakpoints list (backwards compatible)
     breakpoints = [int(x) for x in args.breakpoints.split(",") if x.strip()] if args.breakpoints else []
+    breakpoint_interval = args.breakpoint_interval if args.breakpoint_interval and args.breakpoint_interval > 0 else 0
 
     train(
         mode=args.mode,
@@ -394,8 +430,11 @@ if __name__ == "__main__":
         save_dir=args.save_dir,
         save_every=args.save_every,
         breakpoints=breakpoints,
+        breakpoint_interval=breakpoint_interval,
         sample_length=args.sample_length,
         max_steps=args.max_steps,
         seed=args.seed,
         seed_text=args.seed_text,
+        save_checkpoints=args.save_checkpoints,
+        save_final_only=args.save_final_only,
     )
