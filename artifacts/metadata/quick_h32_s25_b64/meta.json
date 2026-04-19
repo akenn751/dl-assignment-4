@@ -1,0 +1,12 @@
+{
+  "exp_name": "quick_h32_s25_b64",
+  "mode": "char",
+  "model_type": "rnn",
+  "hidden": 32,
+  "batch": 64,
+  "seq": 25,
+  "lr": 0.0005,
+  "epochs": 1,
+  "seed": 123,
+  "created_at": "2026-04-19T01:52:47.856940+00:00"
+}
