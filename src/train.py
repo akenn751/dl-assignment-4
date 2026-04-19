@@ -220,7 +220,14 @@ def train(
         ).to(device)
 
     elif model_type == "lstm":
-        raise NotImplementedError("LSTM not yet built")
+        from src.models.rnn_lstm import LSTMRNN
+        model = LSTMRNN(
+            input_size=vocab_size,
+            hidden_size=hidden_size,
+            output_size=vocab_size,
+            device=device,
+        ).to(device)
+
 
     else:
         raise ValueError(f"Unknown model type: {model_type}")
