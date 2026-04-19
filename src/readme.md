@@ -85,7 +85,7 @@ Comma-separated list of epochs where text samples should be generated.
 
 E.G. 
 
-`--breakpoints 1,2,3,4,5`
+--breakpoints 1,2,3,4,5
 
 `--breakpoint-interval <int>`
 
@@ -93,7 +93,7 @@ Alternative to explicit list, generates samples every N epochs
 
 E.G.
 
-``--breakpoint-interval 1'`
+--breakpoint-interval 1
 
 `--sample-length <int>`
 
@@ -107,4 +107,4 @@ Optional method to stop training early. Stops the training after this many steps
 
 ## Example command using all the options
 
-python -m src.train --mode word --model rnn --hidden 64 --seq 50 --batch 16 --epochs 5 --lr 5e-4 --exp-name example_full_run --save-dir artifacts --save-every 1 --save-checkpoints --breakpoints 1,2,3,4,5 --breakpoint-interval 1 --sample-length 100 --max-steps 10000 --seed 123 --seed-text "The adventure" --save-final-only
+`python -m src.train --mode word --model rnn --hidden 64 --seq 50 --batch 16 --epochs 5 --lr 5e-4 --exp-name example_full_run --save-dir artifacts --save-every 1 --save-checkpoints --breakpoints 1,2,3,4,5 --breakpoint-interval 1 --sample-length 100 --max-steps 10000 --seed 123 --seed-text "The adventure" --save-final-only`
