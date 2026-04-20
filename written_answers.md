@@ -438,9 +438,6 @@ The <UNK> of <UNK> trees, India in <UNK> falling setting of <UNK> along by <UNK>
 **Notes**\
 The loss begins 5.22461 at and decreases over epochs to 3.65266. This is the best final result of all the word-mode testing, implying that using the LSTM model, higher number of hidden layers, and longer sequence lengths improves loss perofmrnace over time. The sampled results are similar to what we've seen in the other tests in this section.
 
-
-## Overall Takeaways
-
 ## Final Summary Table of Results
 
 | Mode | Model   | Hidden Layers | Sequence Length | Loss Epoch 1 | Loss Epoch 2 | Loss Epoch 3 | Loss Epoch 4 | Loss Epoch 5 |
@@ -461,3 +458,15 @@ The loss begins 5.22461 at and decreases over epochs to 3.65266. This is the bes
 | word | lstm    | 32            | 50              | 5.47138      | 4.77274      | 4.48125      | 4.31337      | 4.19608      |
 | word | lstm    | 64            | 25              | 5.40171      | 4.67366      | 4.32582      | 4.10249      | 3.93025      |
 | word | lstm    | 64            | 50              | 5.22461      | 4.44646      | 4.10004      | 3.85386      | 3.65266      |
+
+## Overall Takeaways
+
+From the table above comparing all results across all tests we see some clear outcomes.
+
+1. The LSTM model outperforms the vanilla RNN model in all configurations where they can be compared directly. LTSM converges more quickly and ends with lower loss, benefits more from longer sequence lengths owing to the fact that it can remember those sequences, and benefits more from larger hidden layer sizes as it is able to use the capacity more effectively.
+
+2. Hidden layer sizes being increased lowered the loss in every test we ran, and we saw from the single epoch run we tested at the beginning with 512 hidden layers that this trend would only continue if we had more compute power and more time to run more tests. We see that the increase in hidden layers gives more improvement to LSTM than vanilla RNN, and more improvement to word-level than char-level.
+
+3. Increasing sequence length improves the loss rate in all models, but with diminishing returns compared to increasing hidden layers. LSTM benefits from this more than vanilla RNN, and word-level models benefit more than char-level models.
+
+4. It is difficult to compare char-level and word-level loss rates directly as they use different vocabulary sizes (256 vs. 5000). LSTM models still do a better job with this task but the difference is not as pronounced as with char-level models. The larger vocabulary size for the word-level models make the training task more difficult and harder to train with a simple architecture, though with enough resource and time the LSTM word level models would point to having the best results based on sample output.
